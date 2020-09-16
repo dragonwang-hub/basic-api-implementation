@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,8 @@ public class RsController {
 
     private List<RsEvent> initRsList() {
         List<RsEvent> tempRsList = new ArrayList<>();
-        tempRsList.add(new RsEvent("第一条事件", "无分类"));
+        User user = new User("dragon", 24, "male", "ylw@tw.com", "18812345678");
+        tempRsList.add(new RsEvent("第一条事件", "无分类", user));
         tempRsList.add(new RsEvent("第二条事件", "无分类"));
         tempRsList.add(new RsEvent("第三条事件", "无分类"));
         return tempRsList;
@@ -51,7 +53,7 @@ public class RsController {
             if (rsEvent.getUser().getUserName().equals(user.getUserName())) {
                 rsEvent.setUser(null);
                 rsList.add(rsEvent);
-                return ResponseEntity.created(null).build();
+                return ResponseEntity.created(URI.create(null)).build();
             }
         }
         userController.registerUser(rsEvent.getUser());
