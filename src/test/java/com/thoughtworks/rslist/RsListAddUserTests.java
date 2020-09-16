@@ -35,7 +35,7 @@ class RsListAddUserTests {
         String json = objectMapper.writeValueAsString(rsEvent); // 转为json字符串
         mockMvc.perform(post("/rs/event").content(json)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(4)))
@@ -88,7 +88,7 @@ class RsListAddUserTests {
         String json = objectMapper.writeValueAsString(rsEvent); // 转为json字符串
         mockMvc.perform(post("/rs/event").content(json)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(4)))

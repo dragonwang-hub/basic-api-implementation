@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.dto.User;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,13 +24,14 @@ public class UserController {
     }
 
     @GetMapping("/rs/users")
-    public List<User> getAllUser() {
-        return userList;
+    public ResponseEntity<List<User>> getAllUser() {
+        return ResponseEntity.ok(userList);
     }
 
     @PostMapping("/rs/register")
-    public void registerUser(@Valid @RequestBody User newUser) throws JsonProcessingException {
+    public ResponseEntity registerUser(@Valid @RequestBody User newUser) throws JsonProcessingException {
         userList.add(newUser);
+        return ResponseEntity.created(null).build();
     }
 }
 
