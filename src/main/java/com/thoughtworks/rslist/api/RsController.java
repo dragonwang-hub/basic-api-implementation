@@ -62,7 +62,7 @@ public class RsController {
     }
 
     @PutMapping("/rs/{index}")
-    public ResponseEntity<RsEvent> alterRsEvent(@PathVariable int index, @Valid @RequestBody RsEvent rsEvent) throws JsonProcessingException {
+    public ResponseEntity<RsEvent> alterRsEvent(@PathVariable int index, @Valid @RequestBody RsEvent rsEvent)  {
         rsList.get(index - 1).setKeyword(rsEvent.getKeyword());
         rsList.get(index - 1).setEventName(rsEvent.getEventName());
         return ResponseEntity.ok(rsList.get(index - 1));
