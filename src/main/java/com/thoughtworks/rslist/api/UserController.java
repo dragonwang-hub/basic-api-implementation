@@ -13,13 +13,11 @@ import java.util.List;
 @RestController
 public class UserController {
 
-    private List<User> userList = initUserList();
+    public static List<User> userList = new ArrayList<>();
 
-    private List<User> initUserList() {
-        List<User> tempUserList = new ArrayList<>();
-        tempUserList.add(new User("hello", 19, "male", "1@2.3", "10123456789"));
-        tempUserList.add(new User("kityy", 19, "female", "1@2.3", "10123456789"));
-        return tempUserList;
+    public static void initUserList() {
+        userList.add(new User("hello", 19, "male", "1@2.3", "10123456789"));
+        userList.add(new User("kityy", 19, "female", "1@2.3", "10123456789"));
     }
 
     @GetMapping("/rs/users")

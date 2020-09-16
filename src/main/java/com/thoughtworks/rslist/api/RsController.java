@@ -4,22 +4,28 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.thoughtworks.rslist.api.UserController.initUserList;
+import static com.thoughtworks.rslist.api.UserController.userList;
+
+
 @RestController
 public class RsController {
     private List<RsEvent> rsList = initRsList();
+    @Autowired
+    UserController userController;
 
     private List<RsEvent> initRsList() {
         List<RsEvent> tempRsList = new ArrayList<>();
-        User user = new User("dragon", 24, "male", "ylw@tw.com", "18812345678");
-        tempRsList.add(new RsEvent("第一条事件", "无分类", user));
-        tempRsList.add(new RsEvent("第二条事件", "无分类", user));
-        tempRsList.add(new RsEvent("第三条事件", "无分类", user));
+        tempRsList.add(new RsEvent("第一条事件", "无分类"));
+        tempRsList.add(new RsEvent("第二条事件", "无分类"));
+        tempRsList.add(new RsEvent("第三条事件", "无分类"));
         return tempRsList;
     }
 
@@ -39,11 +45,19 @@ public class RsController {
 
     @PostMapping("/rs/event")
     public void addRsEvent(@Valid @RequestBody RsEvent rsEvent) throws JsonProcessingException {
+        for (User user : userList) {
+            if (rsEvent.getUser().getUserName().equals(user.getUserName())) {
+                rsEvent.setUser(null);
+                rsList.add(rsEvent);
+                return;
+            }
+        }
+        userController.registerUser(rsEvent.getUser());
         rsList.add(rsEvent);
     }
 
     @PutMapping("/rs/{index}")
-    public RsEvent alterRsEvent(@PathVariable int index,@Valid @RequestBody RsEvent rsEvent) throws JsonProcessingException {
+    public RsEvent alterRsEvent(@PathVariable int index, @Valid @RequestBody RsEvent rsEvent) throws JsonProcessingException {
         if (rsEvent.getEventName() == "") {
             rsList.get(index - 1).setKeyword(rsEvent.getKeyword());
         } else if (rsEvent.getKeyword() == "") {
