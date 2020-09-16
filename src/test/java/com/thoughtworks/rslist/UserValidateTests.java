@@ -77,6 +77,12 @@ public class UserValidateTests {
                 .andExpect(status().isBadRequest());
     }
 
-
-
+    @Test
+    void should_return_register_failed_when_male_is_emprty() throws Exception {
+        User user = new User("dragon",20,"","ylw@tw.com","18812345678");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 }
