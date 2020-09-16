@@ -103,4 +103,13 @@ public class UserValidateTests {
         mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void should_return_register_failed_when_phone_is_empty() throws Exception {
+        User user = new User("dragon", 20, "male", "ylw@tw.com", "");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 }
