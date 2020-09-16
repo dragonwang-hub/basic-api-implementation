@@ -35,7 +35,7 @@ public class UserValidateTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
         mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)));

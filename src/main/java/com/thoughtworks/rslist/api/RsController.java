@@ -9,6 +9,7 @@ import com.thoughtworks.rslist.exception.CommentError;
 import com.thoughtworks.rslist.exception.IndexException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.jws.soap.SOAPBinding;
@@ -41,7 +42,7 @@ public class RsController {
     @GetMapping("/rs/list")
     public ResponseEntity<List<RsEvent>> getAllRsEvent(@RequestParam(required = false) Integer start,
                                                        @RequestParam(required = false) Integer end) {
-        if (start < 0 || start >= rsList.size() || end < start || end >= rsList.size()) {
+        if (start < 0 || start > rsList.size() || end < start || end > rsList.size()) {
             throw new IndexOutOfBoundsException();
         }
         if (start == null || end == null) {
@@ -53,7 +54,7 @@ public class RsController {
     @JsonView(RsEvent.Public.class)
     @GetMapping("/rs/{index}")
     public ResponseEntity<RsEvent> getRsEvent(@PathVariable int index) throws IndexException {
-        if (index < 0 || index >= rsList.size()) {
+        if (index < 0 || index > rsList.size()) {
             throw new IndexException();
         }
         return ResponseEntity.ok(rsList.get(index - 1));
@@ -88,13 +89,15 @@ public class RsController {
         return ResponseEntity.ok(rsList.remove(index - 1));
     }
 
-    @ExceptionHandler({IndexOutOfBoundsException.class, IndexException.class})
+    @ExceptionHandler({IndexOutOfBoundsException.class, IndexException.class, MethodArgumentNotValidException.class})
     public ResponseEntity handleIndexOutOfBoundsException(Exception ex) throws JsonProcessingException {
         CommentError commentError = new CommentError();
         if (ex instanceof IndexOutOfBoundsException) {
             commentError.setError("invalid request param");
         } else if (ex instanceof IndexException) {
             commentError.setError("invalid index");
+        } else if (ex instanceof MethodArgumentNotValidException) {
+            commentError.setError("invalid param");
         }
         return ResponseEntity.badRequest().body(commentError);
     }
