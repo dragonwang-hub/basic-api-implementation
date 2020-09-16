@@ -152,4 +152,11 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$.keyword", is("无分类")))
                 .andExpect(jsonPath("$", not(hasKey("user"))));
     }
+
+    @Test
+    void should_return_invalid_request_param_when_start_and_end_not_in_range() throws Exception {
+        mockMvc.perform(get("/rs/list?start=1&end=30"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error",is("invalid request param")));
+    }
 }
