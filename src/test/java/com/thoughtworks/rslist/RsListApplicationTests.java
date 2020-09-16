@@ -173,10 +173,18 @@ class RsListApplicationTests {
         RsEvent rsEvent =new RsEvent(null,"exception!");
         ObjectMapper objectMapper=new ObjectMapper();
         String json = objectMapper.writeValueAsString(rsEvent);
-
         mockMvc.perform(post("/rs/event").content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error",is("invalid param")));
     }
 
+    @Test
+    void should_no_add_user_when_user_invalid() throws Exception {
+        User user = new User("dragon", 101, "male", "ylw@tw.com", "18812345678");
+        ObjectMapper objectMapper=new ObjectMapper();
+        String json = objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/rs/register").content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error",is("invalid user")));
+    }
 }
