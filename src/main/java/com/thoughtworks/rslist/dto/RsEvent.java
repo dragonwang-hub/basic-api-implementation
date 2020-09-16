@@ -10,48 +10,23 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class RsEvent {
+    public interface Public {}
+    public interface Internal extends Public {}
+
     @NotEmpty
+    @JsonView(RsEvent.Public.class)
     private String eventName;
     @NotEmpty
+    @JsonView(RsEvent.Public.class)
     private String keyword;
     @NotNull
     @Valid
+    @JsonView(RsEvent.Internal.class)
     private User user;
-
-    public static class Public {}
-    public static class Internal extends Public {}
-
-    @JsonView(RsEvent.Public.class)
-    public String getEventName() {
-        return eventName;
-    }
-    @JsonView(RsEvent.Public.class)
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
-    }
-
-    @JsonView(RsEvent.Public.class)
-    public String getKeyword() {
-        return keyword;
-    }
-    @JsonView(RsEvent.Public.class)
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
-
-    @JsonView(RsEvent.Internal.class)
-    public User getUser() {
-        return user;
-    }
-
-    @JsonView(RsEvent.Internal.class)
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public RsEvent(String eventName, String keyword) {
         this.eventName = eventName;

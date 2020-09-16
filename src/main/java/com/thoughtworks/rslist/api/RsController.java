@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.api;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.dto.RsEvent;
@@ -33,6 +34,7 @@ public class RsController {
         return tempRsList;
     }
 
+    @JsonView(RsEvent.Public.class)
     @GetMapping("/rs/list")
     public ResponseEntity<List<RsEvent>> getAllRsEvent(@RequestParam(required = false) Integer start,
                                                        @RequestParam(required = false) Integer end) {
@@ -42,6 +44,7 @@ public class RsController {
         return ResponseEntity.ok(rsList.subList(start - 1, end));
     }
 
+    @JsonView(RsEvent.Public.class)
     @GetMapping("/rs/{index}")
     public ResponseEntity<RsEvent> getRsEvent(@PathVariable int index) {
         return ResponseEntity.ok(rsList.get(index - 1));
@@ -53,7 +56,7 @@ public class RsController {
             if (rsEvent.getUser().getUserName().equals(user.getUserName())) {
                 rsEvent.setUser(null);
                 rsList.add(rsEvent);
-                return ResponseEntity.created(URI.create(null)).build();
+                return ResponseEntity.created(null).build();
             }
         }
         userController.registerUser(rsEvent.getUser());
