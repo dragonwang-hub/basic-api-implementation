@@ -113,16 +113,7 @@ class RsListApplicationTests {
     }
 
     @Test
-    void should_alter_only_eventName_rs_event() throws Exception {
-        mockMvc.perform(get("/rs/list"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
-                .andExpect(jsonPath("$[0].keyword", is("无分类")))
-                .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
-                .andExpect(jsonPath("$[1].keyword", is("无分类")))
-                .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
-                .andExpect(jsonPath("$[2].keyword", is("无分类")));
+    void should_badrequest_when_keywork_is_empty() throws Exception {
         User user = new User("dragon", 24, "male", "ylw@tw.com", "18812345678");
         RsEvent rsEvent = new RsEvent("猪肉涨价了", "", user);
         ObjectMapper objectMapper = new ObjectMapper();// 通过此类实现json的序列化和反序列化
@@ -130,15 +121,6 @@ class RsListApplicationTests {
         mockMvc.perform(put("/rs/1").content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
-        mockMvc.perform(get("/rs/list"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].eventName", is("猪肉涨价了")))
-                .andExpect(jsonPath("$[0].keyword", is("无分类")))
-                .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
-                .andExpect(jsonPath("$[1].keyword", is("无分类")))
-                .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
-                .andExpect(jsonPath("$[2].keyword", is("无分类")));
     }
 
     @Test
