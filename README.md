@@ -35,9 +35,6 @@ notice: 注意@Valid和@Validated的配合使用
 
   
 
-
-
-
 ## data-binding作业要求
 根据课堂上的demo，完成下面需求
 1. 提供获取某一条热搜事件的接口

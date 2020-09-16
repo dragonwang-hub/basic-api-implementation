@@ -28,7 +28,6 @@ public class RsController {
             return rsList;
         }
         return rsList.subList(start - 1, end);
-
     }
 
     @GetMapping("/rs/{index}")
