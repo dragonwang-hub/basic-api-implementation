@@ -27,7 +27,7 @@ public class UserValidateTests {
 
     @Test
     void should_return_register_success_when_register_user_info_is_valid() throws Exception {
-        User user = new User("dragon_wang",24,"male","ylw@tw.com","18812345678");
+        User user = new User("dragon",24,"male","ylw@tw.com","18812345678");
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
 
@@ -39,5 +39,14 @@ public class UserValidateTests {
         mockMvc.perform(get("/rs/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$",hasSize(3)));
+    }
+
+    @Test
+    void should_return_register_failed_when_userName_is_empty() throws Exception {
+        User user = new User("",19,"male","ylw@tw.com","18812345678");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }
