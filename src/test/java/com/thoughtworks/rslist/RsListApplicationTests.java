@@ -67,6 +67,7 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$[2].keyword", is("无分类")));
     }
 
+
     @Test
     void should_alter_eventName_and_keyword_rs_event() throws Exception {
         mockMvc.perform(get("/rs/list"))
