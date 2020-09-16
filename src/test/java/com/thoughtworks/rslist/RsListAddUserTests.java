@@ -11,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.thoughtworks.rslist.api.UserController.initUserList;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -27,7 +26,6 @@ class RsListAddUserTests {
 
     @Test
     void should_add_one_rs_event() throws Exception {
-        initUserList();
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)));
@@ -44,7 +42,6 @@ class RsListAddUserTests {
                 .andExpect(jsonPath("$[3].eventName", is("猪肉涨价了")))
                 .andExpect(jsonPath("$[3].keyword", is("经济")))
                 .andExpect(jsonPath("$[3].user.userName", is("dragon")));
-        ;
     }
 
     @Test
@@ -82,7 +79,6 @@ class RsListAddUserTests {
 
     @Test
     void should_add_one_rs_event_and_user_is_existed() throws Exception {
-        initUserList();
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)));

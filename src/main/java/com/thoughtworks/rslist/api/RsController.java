@@ -11,13 +11,14 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.thoughtworks.rslist.api.UserController.initUserList;
+
 import static com.thoughtworks.rslist.api.UserController.userList;
 
 
 @RestController
 public class RsController {
     private List<RsEvent> rsList = initRsList();
+
     @Autowired
     UserController userController;
 
