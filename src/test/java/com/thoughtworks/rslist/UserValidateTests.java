@@ -61,11 +61,22 @@ public class UserValidateTests {
 
     @Test
     void should_return_register_failed_when_age_less_than_18() throws Exception {
-        User user = new User("dragon_wang",17,"male","ylw@tw.com","18812345678");
+        User user = new User("dragon",17,"male","ylw@tw.com","18812345678");
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void should_return_register_failed_when_age_more_than_100() throws Exception {
+        User user = new User("dragon",101,"male","ylw@tw.com","18812345678");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+
 
 }
