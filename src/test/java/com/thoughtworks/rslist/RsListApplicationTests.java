@@ -82,7 +82,8 @@ class RsListApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(4)))
                 .andExpect(jsonPath("$[3].eventName", is("猪肉涨价了")))
-                .andExpect(jsonPath("$[3].keyword", is("经济")));
+                .andExpect(jsonPath("$[3].keyword", is("经济")))
+                .andExpect(jsonPath("$[3].user.userName", is("dragon")));;
     }
 
     @Test
@@ -92,6 +93,28 @@ class RsListApplicationTests {
         ObjectMapper objectMapper = new ObjectMapper();// 通过此类实现json的序列化和反序列化
         String json = objectMapper.writeValueAsString(rsEvent); // 转为json字符串
         mockMvc.perform(post("/rs/event").content(json)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void should_badrequest_when_add_rsevent_eventName_is_empty() throws Exception {
+        User user = new User("dragon", 24, "male", "ylw@tw.com", "18812345678");
+        RsEvent rsEvent = new RsEvent("", "经济", user);
+        ObjectMapper objectMapper = new ObjectMapper();// 通过此类实现json的序列化和反序列化
+        String json = objectMapper.writeValueAsString(rsEvent); // 转为json字符串
+        mockMvc.perform(post("/rs/event").content(json)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void should_badrequest_when_add_rsevent_keywork_is_empty() throws Exception {
+        User user = new User("dragon", 24, "male", "ylw@tw.com", "18812345678");
+        RsEvent rsEvent = new RsEvent("猪肉涨价了", "", user);
+        ObjectMapper objectMapper = new ObjectMapper();// 通过此类实现json的序列化和反序列化
+        String json = objectMapper.writeValueAsString(rsEvent); // 转为json字符串
+        mockMvc.perform(put("/rs/event").content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }

@@ -17,8 +17,8 @@ public class UserController {
 
     private List<User> initUserList() {
         List<User> tempUserList = new ArrayList<>();
-        tempUserList.add(new User("hello", 10, "male", "1@2.3", "10123456789"));
-        tempUserList.add(new User("kityy", 10, "female", "1@2.3", "10123456789"));
+        tempUserList.add(new User("hello", 19, "male", "1@2.3", "10123456789"));
+        tempUserList.add(new User("kityy", 19, "female", "1@2.3", "10123456789"));
         return tempUserList;
     }
 
