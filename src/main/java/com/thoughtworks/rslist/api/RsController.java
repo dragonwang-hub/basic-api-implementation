@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.jws.soap.SOAPBinding;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
@@ -52,20 +53,23 @@ public class RsController {
 
     @PostMapping("/rs/event")
     public ResponseEntity addRsEvent(@Valid @RequestBody RsEvent rsEvent) throws JsonProcessingException {
+        int index = -1;
         for (User user : userList) {
             if (rsEvent.getUser().getUserName().equals(user.getUserName())) {
                 rsEvent.setUser(null);
                 rsList.add(rsEvent);
-                return ResponseEntity.created(null).build();
+                index = rsList.size();
+                return ResponseEntity.created(URI.create("/rs/" + index)).build();
             }
         }
         userController.registerUser(rsEvent.getUser());
         rsList.add(rsEvent);
-        return ResponseEntity.created(null).build();
+        index = rsList.size();
+        return ResponseEntity.created(URI.create("/rs/" + index)).build();
     }
 
     @PutMapping("/rs/{index}")
-    public ResponseEntity<RsEvent> alterRsEvent(@PathVariable int index, @Valid @RequestBody RsEvent rsEvent)  {
+    public ResponseEntity<RsEvent> alterRsEvent(@PathVariable int index, @Valid @RequestBody RsEvent rsEvent) {
         rsList.get(index - 1).setKeyword(rsEvent.getKeyword());
         rsList.get(index - 1).setEventName(rsEvent.getEventName());
         return ResponseEntity.ok(rsList.get(index - 1));

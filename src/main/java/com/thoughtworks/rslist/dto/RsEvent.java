@@ -20,9 +20,11 @@ public class RsEvent {
     @NotEmpty
     @JsonView(RsEvent.Public.class)
     private String eventName;
+
     @NotEmpty
     @JsonView(RsEvent.Public.class)
     private String keyword;
+
     @NotNull
     @Valid
     @JsonView(RsEvent.Internal.class)
