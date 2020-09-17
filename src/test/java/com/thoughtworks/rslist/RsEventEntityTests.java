@@ -57,4 +57,26 @@ public class RsEventEntityTests {
         assertEquals("猪肉什么时候能降价？",allRsEvent.get(0).getEventName());
         assertEquals(user.getId(),allRsEvent.get(0).getUserId());
     }
+
+    @Test
+    void should_bad_request_when_user_not_exists() throws Exception {
+        UserEntity user = UserEntity.builder()
+                .userName("dragon")
+                .gender("male")
+                .age(24)
+                .phone("18812345678")
+                .email("ylw@tw.com")
+                .voteNumb(10)
+                .build();
+        userRepository.save(user);
+
+        RsEvent rsEvent = new RsEvent("猪肉什么时候能降价？","民生",2);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writerWithView(RsEvent.Public.class).writeValueAsString(rsEvent);
+        mockMvc.perform(post("/rs/event").content(json)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        List<RsEventEntity> allRsEvent = rsEventRepository.findAll();
+        assertEquals(0,allRsEvent.size());
+    }
 }
