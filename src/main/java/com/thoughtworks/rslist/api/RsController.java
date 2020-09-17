@@ -105,20 +105,30 @@ public class RsController {
         if (!rsEventEntity.getUser().equals(user)) {
             return ResponseEntity.badRequest().build();
         }
-
-        RsEventEntity responseEntity = RsEventEntity.builder()
-                .eventName(rsEvent.getEventName())
-                .keyword(rsEvent.getKeyword())
-                .user(user)
-                .build();
+        RsEventEntity responseEntity;
+        if(rsEvent.getEventName().equals("")){
+            responseEntity = RsEventEntity.builder()
+                    .eventName(rsEventEntity.getEventName())
+                    .keyword(rsEvent.getKeyword())
+                    .user(user)
+                    .build();
+        }else if(rsEvent.getKeyword().equals("")){
+            responseEntity = RsEventEntity.builder()
+                    .eventName(rsEvent.getEventName())
+                    .keyword(rsEventEntity.getKeyword())
+                    .user(user)
+                    .build();
+        }else {
+            responseEntity = RsEventEntity.builder()
+                    .eventName(rsEvent.getEventName())
+                    .keyword(rsEvent.getKeyword())
+                    .user(user)
+                    .build();
+        }
         // 若是同一个user,则删除原有，增加新的
         rsEventRepository.delete(rsEventEntity);
         rsEventRepository.save(responseEntity);
         return ResponseEntity.ok().build();
-
-//        rsList.get(index - 1).setKeyword(rsEvent.getKeyword());
-//        rsList.get(index - 1).setEventName(rsEvent.getEventName());
-//        return ResponseEntity.ok(rsList.get(index - 1));
     }
 
     @DeleteMapping("/rs/{index}")

@@ -18,11 +18,11 @@ public class RsEvent {
     public interface Public {}
     public interface Internal extends Public {}
 
-    @NotEmpty
+    //@NotEmpty 注释掉便于通过新测试-》should_update_rsevent_when_update_eventname
     @JsonView(RsEvent.Public.class)
     private String eventName;
 
-    @NotEmpty
+    //@NotEmpty
     @JsonView(RsEvent.Public.class)
     private String keyword;
 
