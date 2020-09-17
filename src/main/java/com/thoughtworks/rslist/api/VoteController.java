@@ -37,6 +37,7 @@ public class VoteController {
                     .curTime(vote.getCurTime())
                     .rsEventId(rsEventId)
                     .build();
+            userEntity.setVoteNumb(restVotes);
             voteRepository.save(voteEntity);
             return ResponseEntity.created(null).build();
         }

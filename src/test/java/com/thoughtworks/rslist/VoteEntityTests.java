@@ -65,4 +65,32 @@ public class VoteEntityTests {
         mockMvc.perform(post("/rs/vote/2").content(jsonVote).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
     }
+
+    @Test
+    void should_vote_failed_when_user_have_noenough_votes() throws Exception {
+        UserEntity user = UserEntity.builder()
+                .userName("dragon")
+                .gender("male")
+                .age(24)
+                .phone("18812345678")
+                .email("ylw@tw.com")
+                .voteNumb(10)
+                .build();
+        userRepository.save(user);
+        RsEventEntity rsEventEntity = RsEventEntity.builder()
+                .eventName("猪肉又涨价了啊！")
+                .keyword("经济")
+                .user(user)
+                .build();
+        rsEventRepository.save(rsEventEntity);
+        Vote firstVote = new Vote(5,1, "currenttime");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonFirstVote = objectMapper.writeValueAsString(firstVote);
+        mockMvc.perform(post("/rs/vote/2").content(jsonFirstVote).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+        Vote secondVote = new Vote(6,1, "currenttime");
+        String jsonSecondVote = objectMapper.writeValueAsString(secondVote);
+        mockMvc.perform(post("/rs/vote/2").content(jsonSecondVote).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 }
