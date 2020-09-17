@@ -34,8 +34,7 @@ class RsListAddUserTests {
         RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济", user);
         ObjectMapper objectMapper = new ObjectMapper();// 通过此类实现json的序列化和反序列化
         String json = objectMapper.writerWithView(RsEvent.Internal.class).writeValueAsString(rsEvent); // 转为json字符串
-        mockMvc.perform(post("/v" +
-                "drs/event").content(json)
+        mockMvc.perform(post("/rs/event").content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated()).andExpect(header().string("Location",is("/rs/4")));
         mockMvc.perform(get("/rs/list"))
