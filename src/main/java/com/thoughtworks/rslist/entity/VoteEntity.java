@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,10 +21,13 @@ public class VoteEntity {
 
     private int voteNumb;
 
-    private int userId;
-
     private String curTime;
 
-    private int rsEventId;
+    @ManyToOne()
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
+    @ManyToOne()
+    @JoinColumn(name = "rsevent_id")
+    private RsEventEntity rsevent;
 }

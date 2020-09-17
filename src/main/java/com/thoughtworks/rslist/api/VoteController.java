@@ -1,6 +1,8 @@
 package com.thoughtworks.rslist.api;
 
+import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.Vote;
+import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.entity.VoteEntity;
 import com.thoughtworks.rslist.userrepository.RsEventRepository;
@@ -29,13 +31,14 @@ public class VoteController {
     public ResponseEntity addVotes(@PathVariable int rsEventId, @RequestBody Vote vote) {
 
         UserEntity userEntity = userRepository.findById(vote.getUserId()).get();
+        RsEventEntity rsEventEntity = rsEventRepository.findById(rsEventId).get();
         int restVotes = userEntity.getVoteNumb() - vote.getVoteNumb();
         if (restVotes >= 0) {
             VoteEntity voteEntity = VoteEntity.builder()
                     .voteNumb(vote.getVoteNumb())
-                    .userId(vote.getUserId())
+                    .user(userEntity)
                     .curTime(vote.getCurTime())
-                    .rsEventId(rsEventId)
+                    .rsevent(rsEventEntity)
                     .build();
             userEntity.setVoteNumb(restVotes);
             voteRepository.save(voteEntity);
