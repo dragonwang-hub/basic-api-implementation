@@ -187,4 +187,34 @@ public class RsEventEntityTests {
         assertEquals(user.getUserName(), allRsEvent.get(0).getUser().getUserName());
     }
 
+    @Test
+    void should_update_rsevent_when_update_key() throws Exception {
+        UserEntity user = UserEntity.builder()
+                .userName("dragon")
+                .gender("male")
+                .age(24)
+                .phone("18812345678")
+                .email("ylw@tw.com")
+                .voteNumb(10)
+                .build();
+        userRepository.save(user);
+        RsEventEntity rsEventEntity = RsEventEntity.builder()
+                .eventName("猪肉又涨价了啊！")
+                .keyword("经济")
+                .user(user)
+                .build();
+        rsEventRepository.save(rsEventEntity);
+        RsEvent rsEvent = new RsEvent("", "民生", user.getId());
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writerWithView(RsEvent.Public.class).writeValueAsString(rsEvent);
+        mockMvc.perform(put("/rs/2").content(json)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        List<RsEventEntity> allRsEvent = rsEventRepository.findAll();
+        assertEquals(1, allRsEvent.size());
+        assertEquals("猪肉又涨价了啊！", allRsEvent.get(0).getEventName());
+        assertEquals("民生", allRsEvent.get(0).getKeyword());
+        assertEquals(user.getUserName(), allRsEvent.get(0).getUser().getUserName());
+    }
+
 }
