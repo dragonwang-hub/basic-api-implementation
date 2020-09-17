@@ -73,13 +73,14 @@ public class RsController {
 
     @PostMapping("/rs/event")
     public ResponseEntity addRsEvent(@Valid @RequestBody RsEvent rsEvent) throws JsonProcessingException {
-        if(!userRepository.findById(rsEvent.getUserId()).isPresent()){
+        if (!userRepository.findById(rsEvent.getUserId()).isPresent()) {
             return ResponseEntity.badRequest().build();
         }
+        UserEntity user = userRepository.findById(rsEvent.getUserId()).get();
         RsEventEntity responseEntity = RsEventEntity.builder()
                 .eventName(rsEvent.getEventName())
                 .keyword(rsEvent.getKeyword())
-                .userId(rsEvent.getUserId())
+                .user(user)
                 .build();
         rsEventRepository.save(responseEntity);
         return ResponseEntity.created(null).build();
@@ -99,9 +100,25 @@ public class RsController {
 
     @PutMapping("/rs/{index}")
     public ResponseEntity<RsEvent> alterRsEvent(@PathVariable int index, @Valid @RequestBody RsEvent rsEvent) {
-        rsList.get(index - 1).setKeyword(rsEvent.getKeyword());
-        rsList.get(index - 1).setEventName(rsEvent.getEventName());
-        return ResponseEntity.ok(rsList.get(index - 1));
+        UserEntity user = userRepository.findById(rsEvent.getUserId()).get();
+        RsEventEntity rsEventEntity = rsEventRepository.findById(index).get();
+        if (!rsEventEntity.getUser().equals(user)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        RsEventEntity responseEntity = RsEventEntity.builder()
+                .eventName(rsEvent.getEventName())
+                .keyword(rsEvent.getKeyword())
+                .user(user)
+                .build();
+        // 若是同一个user,则删除原有，增加新的
+        rsEventRepository.delete(rsEventEntity);
+        rsEventRepository.save(responseEntity);
+        return ResponseEntity.ok().build();
+
+//        rsList.get(index - 1).setKeyword(rsEvent.getKeyword());
+//        rsList.get(index - 1).setEventName(rsEvent.getEventName());
+//        return ResponseEntity.ok(rsList.get(index - 1));
     }
 
     @DeleteMapping("/rs/{index}")

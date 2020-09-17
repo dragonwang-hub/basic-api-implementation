@@ -35,6 +35,11 @@ public class UserEntityTests {
     UserRepository userRepository;
     @Autowired
     RsEventRepository rsEventRepository;
+    @BeforeEach
+    public void setUp(){
+        rsEventRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @Test
     void should_add_user_to_mysql_when_register_user_info_is_valid() throws Exception {
@@ -92,7 +97,7 @@ public class UserEntityTests {
         RsEventEntity rsEventEntity = RsEventEntity.builder()
                 .eventName("猪肉什么时候能降价？")
                 .keyword("民生")
-                .userId(user.getId())
+                .user(user)
                 .build();
         rsEventRepository.save(rsEventEntity);
         List<RsEventEntity> allRsEvent = rsEventRepository.findAll();

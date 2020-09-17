@@ -1,20 +1,11 @@
 package com.thoughtworks.rslist.entity;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.thoughtworks.rslist.dto.RsEvent;
-import com.thoughtworks.rslist.dto.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "rs_event")
@@ -32,6 +23,10 @@ public class RsEventEntity {
 
     private String keyword;
 
-    private int userId;
+    //private int userId;
+
+    @ManyToOne()
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
 }
