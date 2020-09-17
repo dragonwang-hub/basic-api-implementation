@@ -11,7 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasKey;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -111,5 +112,21 @@ public class UserValidateTests {
         String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void should_get_all_user_info_by_jsonproperty() throws Exception {
+        mockMvc.perform(get("/rs/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].user_name", is("hello")))
+                .andExpect(jsonPath("$[0].user_age", is(19)))
+                .andExpect(jsonPath("$[0].user_gender", not(hasKey("male"))))
+                .andExpect(jsonPath("$[0].user_email", not(hasKey("1@2.3"))))
+                .andExpect(jsonPath("$[0].user_phone", not(hasKey("10123456789"))))
+                .andExpect(jsonPath("$[1].user_name", is("kityy")))
+                .andExpect(jsonPath("$[1].user_age", is(19)))
+                .andExpect(jsonPath("$[1].user_gender", not(hasKey("female"))))
+                .andExpect(jsonPath("$[1].user_email", not(hasKey("1@2.3"))))
+                .andExpect(jsonPath("$[1].user_phone", not(hasKey("10123456789"))));
     }
 }

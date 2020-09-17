@@ -34,7 +34,8 @@ class RsListAddUserTests {
         RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济", user);
         ObjectMapper objectMapper = new ObjectMapper();// 通过此类实现json的序列化和反序列化
         String json = objectMapper.writerWithView(RsEvent.Internal.class).writeValueAsString(rsEvent); // 转为json字符串
-        mockMvc.perform(post("/rs/event").content(json)
+        mockMvc.perform(post("/v" +
+                "drs/event").content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated()).andExpect(header().string("Location",is("/rs/4")));
         mockMvc.perform(get("/rs/list"))
@@ -95,21 +96,5 @@ class RsListAddUserTests {
                 .andExpect(jsonPath("$[3].eventName", is("猪肉涨价了")))
                 .andExpect(jsonPath("$[3].keyword", is("经济")))
                 .andExpect(jsonPath("$", not(hasKey("user"))));
-    }
-
-    @Test
-    void should_get_all_user_info_by_jsonproperty() throws Exception {
-        mockMvc.perform(get("/rs/users"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].user_name", is("hello")))
-                .andExpect(jsonPath("$[0].user_age", is(19)))
-                .andExpect(jsonPath("$[0].user_gender", not(hasKey("male"))))
-                .andExpect(jsonPath("$[0].user_email", not(hasKey("1@2.3"))))
-                .andExpect(jsonPath("$[0].user_phone", not(hasKey("10123456789"))))
-                .andExpect(jsonPath("$[1].user_name", is("kityy")))
-                .andExpect(jsonPath("$[1].user_age", is(19)))
-                .andExpect(jsonPath("$[1].user_gender", not(hasKey("female"))))
-                .andExpect(jsonPath("$[1].user_email", not(hasKey("1@2.3"))))
-                .andExpect(jsonPath("$[1].user_phone", not(hasKey("10123456789"))));
     }
 }

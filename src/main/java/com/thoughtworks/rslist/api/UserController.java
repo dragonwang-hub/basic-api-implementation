@@ -3,8 +3,11 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.dto.User;
+import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.CommentError;
 import com.thoughtworks.rslist.exception.IndexException;
+import com.thoughtworks.rslist.userrepository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,6 +19,9 @@ import java.util.List;
 
 @RestController
 public class UserController {
+
+    @Autowired
+    private UserRepository userRepository;
 
     public static List<User> userList = initUserList();
 
@@ -33,6 +39,14 @@ public class UserController {
 
     @PostMapping("/rs/register")
     public ResponseEntity registerUser(@Valid @RequestBody User newUser) throws JsonProcessingException {
+        UserEntity userEntity = UserEntity.builder()
+                .userName(newUser.getUserName())
+                .age(newUser.getAge())
+                .email(newUser.getEmail())
+                .gender(newUser.getGender())
+                .phone(newUser.getPhone())
+                .build();
+        userRepository.save(userEntity);
         userList.add(newUser);
         return ResponseEntity.created(null).build();
     }
