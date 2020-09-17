@@ -1,14 +1,11 @@
 package com.thoughtworks.rslist.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.dto.User;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.CommentError;
-import com.thoughtworks.rslist.exception.IndexException;
 import com.thoughtworks.rslist.userrepository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -50,6 +48,13 @@ public class UserController {
         userList.add(newUser);
         return ResponseEntity.created(null).build();
     }
+
+    @GetMapping("/rs/users/{id}")
+    public ResponseEntity<Optional<UserEntity>> getUserById(@PathVariable int id) {
+        Optional<UserEntity> userById = userRepository.findById(id);
+        return ResponseEntity.ok(userById);
+    }
+
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity handleIndexOutOfBoundsException(Exception ex) throws JsonProcessingException {
