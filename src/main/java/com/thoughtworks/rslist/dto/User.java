@@ -1,4 +1,5 @@
 package com.thoughtworks.rslist.dto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,4 +33,15 @@ public class User {
     @Pattern(regexp = "^1[0-9]{10}$")
     @JsonProperty("user_phone")
     private String phone;
+
+    @JsonIgnore
+    private int voteNumb;
+
+    public User(String userName, int age, String gender, String email, String phone) {
+        this.userName = userName;
+        this.age = age;
+        this.gender = gender;
+        this.email = email;
+        this.phone = phone;
+    }
 }

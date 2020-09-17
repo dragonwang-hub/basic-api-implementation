@@ -47,7 +47,7 @@ class RsListAddUserTests {
     @Test
     void should_badrequest_when_user_is_null() throws Exception {
         User user = new User("dragon", 24, "male", "ylw@tw.com", "18812345678");
-        RsEvent rsEvent = new RsEvent("", "经济", null);
+        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济", null);
         ObjectMapper objectMapper = new ObjectMapper();// 通过此类实现json的序列化和反序列化
         String json = objectMapper.writeValueAsString(rsEvent); // 转为json字符串
         mockMvc.perform(post("/rs/event").content(json)

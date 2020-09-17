@@ -5,8 +5,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
+import com.thoughtworks.rslist.entity.RsEventEntity;
+import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.CommentError;
 import com.thoughtworks.rslist.exception.IndexException;
+import com.thoughtworks.rslist.userrepository.RsEventRepository;
+import com.thoughtworks.rslist.userrepository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,6 +21,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 
 import static com.thoughtworks.rslist.api.UserController.userList;
@@ -28,6 +33,11 @@ public class RsController {
 
     @Autowired
     UserController userController;
+
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    RsEventRepository rsEventRepository;
 
     private List<RsEvent> initRsList() {
         List<RsEvent> tempRsList = new ArrayList<>();
@@ -63,19 +73,25 @@ public class RsController {
 
     @PostMapping("/rs/event")
     public ResponseEntity addRsEvent(@Valid @RequestBody RsEvent rsEvent) throws JsonProcessingException {
-        int index = -1;
-        for (User user : userList) {
-            if (rsEvent.getUser().getUserName().equals(user.getUserName())) {
-                rsEvent.setUser(null);
-                rsList.add(rsEvent);
-                index = rsList.size();
-                return ResponseEntity.created(URI.create("/rs/" + index)).build();
-            }
-        }
-        userController.registerUser(rsEvent.getUser());
-        rsList.add(rsEvent);
-        index = rsList.size();
-        return ResponseEntity.created(URI.create("/rs/" + index)).build();
+        RsEventEntity responseEntity = RsEventEntity.builder()
+                .eventName(rsEvent.getEventName())
+                .keyword(rsEvent.getKeyword())
+                .userId(rsEvent.getUserId())
+                .build();
+        rsEventRepository.save(responseEntity);
+        return ResponseEntity.created(null).build();
+        // 原代码，对内存数据操作
+//        int index = -1;
+//        if(userList.stream().anyMatch(user -> rsEvent.getUser().getUserName().equals(user.getUserName()))){
+//            rsEvent.setUser(null);
+//            rsList.add(rsEvent);
+//            index = rsList.size();
+//            return ResponseEntity.created(URI.create("/rs/" + index)).build();
+//        }
+//        userController.registerUser(rsEvent.getUser());
+//        rsList.add(rsEvent);
+//        index = rsList.size();
+//        return ResponseEntity.created(URI.create("/rs/" + index)).build();
     }
 
     @PutMapping("/rs/{index}")

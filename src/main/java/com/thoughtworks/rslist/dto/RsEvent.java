@@ -1,6 +1,7 @@
 package com.thoughtworks.rslist.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,13 +26,38 @@ public class RsEvent {
     @JsonView(RsEvent.Public.class)
     private String keyword;
 
-    @NotNull
+    //@NotNull 注释掉-便于不带此参数传递时可以通过Valid校验，因此判断此为null的Test将失效-》should_badrequest_when_user_is_null
     @Valid
     @JsonView(RsEvent.Internal.class)
     private User user;
 
+    @NotNull
+    @JsonView(RsEvent.Public.class)
+    private int userId;
+
+    @JsonIgnore
+    public int getUserId() {
+        return userId;
+    }
+
+    @JsonProperty
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+    public RsEvent(@NotEmpty String eventName, @NotEmpty String keyword, @NotNull int userId) {
+        this.eventName = eventName;
+        this.keyword = keyword;
+        this.userId = userId;
+    }
+
     public RsEvent(String eventName, String keyword) {
         this.eventName = eventName;
         this.keyword = keyword;
+    }
+
+    public RsEvent(@NotEmpty String eventName, @NotEmpty String keyword, @NotNull @Valid User user) {
+        this.eventName = eventName;
+        this.keyword = keyword;
+        this.user = user;
     }
 }
