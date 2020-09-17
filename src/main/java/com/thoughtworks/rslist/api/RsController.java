@@ -98,7 +98,7 @@ public class RsController {
 //        return ResponseEntity.created(URI.create("/rs/" + index)).build();
     }
 
-    @PutMapping("/rs/{index}")
+    @PatchMapping("/rs/{index}")
     public ResponseEntity<RsEvent> alterRsEvent(@PathVariable int index, @Valid @RequestBody RsEvent rsEvent) {
         UserEntity user = userRepository.findById(rsEvent.getUserId()).get();
         RsEventEntity rsEventEntity = rsEventRepository.findById(index).get();
