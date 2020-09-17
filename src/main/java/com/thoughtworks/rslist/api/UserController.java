@@ -58,6 +58,7 @@ public class UserController {
 
     @DeleteMapping("/rs/users/{id}")
     public ResponseEntity deleteRsEvent(@PathVariable int id) {
+
         userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }

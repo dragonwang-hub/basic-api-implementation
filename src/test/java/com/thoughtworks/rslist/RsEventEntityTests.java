@@ -46,16 +46,16 @@ public class RsEventEntityTests {
                 .build();
         userRepository.save(user);
 
-        RsEvent rsEvent = new RsEvent("猪肉什么时候能降价？","民生",user.getId());
+        RsEvent rsEvent = new RsEvent("猪肉什么时候能降价？", "民生", user.getId());
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writerWithView(RsEvent.Public.class).writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/event").content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
         List<RsEventEntity> allRsEvent = rsEventRepository.findAll();
-        assertEquals(1,allRsEvent.size());
-        assertEquals("猪肉什么时候能降价？",allRsEvent.get(0).getEventName());
-        assertEquals(user.getId(),allRsEvent.get(0).getUserId());
+        assertEquals(1, allRsEvent.size());
+        assertEquals("猪肉什么时候能降价？", allRsEvent.get(0).getEventName());
+        assertEquals(user.getId(), allRsEvent.get(0).getUserId());
     }
 
     @Test
@@ -70,13 +70,14 @@ public class RsEventEntityTests {
                 .build();
         userRepository.save(user);
 
-        RsEvent rsEvent = new RsEvent("猪肉什么时候能降价？","民生",2);
+        RsEvent rsEvent = new RsEvent("猪肉什么时候能降价？", "民生", 2);
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writerWithView(RsEvent.Public.class).writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/event").content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
         List<RsEventEntity> allRsEvent = rsEventRepository.findAll();
-        assertEquals(0,allRsEvent.size());
+        assertEquals(0, allRsEvent.size());
     }
+
 }

@@ -1,12 +1,13 @@
 package com.thoughtworks.rslist.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.thoughtworks.rslist.dto.RsEvent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -32,12 +33,6 @@ public class UserEntity {
 
     private int voteNumb;
 
-    public UserEntity(Integer id, String userName, int age, String gender, String email, String phone) {
-        this.id = id;
-        this.userName = userName;
-        this.age = age;
-        this.gender = gender;
-        this.email = email;
-        this.phone = phone;
-    }
+    @OneToMany(mappedBy = "userId", cascade=CascadeType.REMOVE)
+    private List<RsEventEntity> rsEventEntities;
 }
