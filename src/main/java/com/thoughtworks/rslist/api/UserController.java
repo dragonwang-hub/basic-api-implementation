@@ -1,6 +1,7 @@
 package com.thoughtworks.rslist.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.CommentError;
@@ -55,6 +56,11 @@ public class UserController {
         return ResponseEntity.ok(userById);
     }
 
+    @DeleteMapping("/rs/users/{id}")
+    public ResponseEntity deleteRsEvent(@PathVariable int id) {
+        userRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity handleIndexOutOfBoundsException(Exception ex) throws JsonProcessingException {

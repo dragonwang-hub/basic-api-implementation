@@ -11,19 +11,20 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class UserEntityTests {
     @Autowired
     MockMvc mockMvc;
@@ -31,25 +32,13 @@ public class UserEntityTests {
     @Autowired
     private UserRepository userRepository;
 
-    @BeforeEach
-    void setUp(){
-        userRepository.deleteAll();
-    }
-
     @Test
     void should_add_user_to_mysql_when_register_user_info_is_valid() throws Exception {
         User user = new User("dragon", 24, "male", "ylw@tw.com", "18812345678");
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
-
-        mockMvc.perform(get("/rs/users"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
         mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
-        mockMvc.perform(get("/rs/users"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)));
         // 用于测试是否成功在数据库内add数据
         List<UserEntity> allUser = userRepository.findAll();
         assertEquals(1, allUser.size());
@@ -64,7 +53,20 @@ public class UserEntityTests {
         mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/users/1"))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userName",is("dragon")));
     }
 
+    @Test
+    void should_delete_user_from_mysql_when_delete_user_by_userid() throws Exception {
+        User user = new User("dragon", 24, "male", "ylw@tw.com", "18812345678");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+        mockMvc.perform(delete("/rs/users/1"))
+                .andExpect(status().isNoContent());
+        List<UserEntity> allUser = userRepository.findAll();
+        assertEquals(0, allUser.size());
+    }
 }
