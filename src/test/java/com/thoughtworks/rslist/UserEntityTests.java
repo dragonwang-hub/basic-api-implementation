@@ -42,6 +42,40 @@ public class UserEntityTests {
     }
 
     @Test
+    void should_get_all_user_info_by_jsonproperty() throws Exception {
+        UserEntity userEntity_1 = UserEntity.builder()
+                .userName("hello")
+                .age(19)
+                .gender("male")
+                .email("1@2.3")
+                .phone("10123456789")
+                .build();
+        userRepository.save(userEntity_1);
+        UserEntity userEntity_2 = UserEntity.builder()
+                .userName("kitty")
+                .age(19)
+                .gender("female")
+                .email("1@2.3")
+                .phone("10123456789")
+                .voteNumb(9)
+                .build();
+        userRepository.save(userEntity_2);
+        mockMvc.perform(get("/rs/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].user_name", is("hello")))
+                .andExpect(jsonPath("$[0].user_age", is(19)))
+                .andExpect(jsonPath("$[0].user_gender",is("male")))
+                .andExpect(jsonPath("$[0].user_email", is("1@2.3")))
+                .andExpect(jsonPath("$[0].user_phone", is("10123456789")))
+                .andExpect(jsonPath("$[0].voteNumb", is(10)))
+                .andExpect(jsonPath("$[1].user_name", is("kitty")))
+                .andExpect(jsonPath("$[1].user_age", is(19)))
+                .andExpect(jsonPath("$[1].user_gender",is("female")))
+                .andExpect(jsonPath("$[1].user_email", is("1@2.3")))
+                .andExpect(jsonPath("$[1].user_phone", is("10123456789")))
+                .andExpect(jsonPath("$[1].voteNumb", is(9)));
+    }
+    @Test
     void should_add_user_to_mysql_when_register_user_info_is_valid() throws Exception {
         User user = new User("dragon", 24, "male", "ylw@tw.com", "18812345678");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -56,11 +90,14 @@ public class UserEntityTests {
 
     @Test
     void should_get_user_from_mysql_when_want_user_info_by_userid() throws Exception {
-        User user = new User("dragon", 24, "male", "ylw@tw.com", "18812345678");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String userJson = objectMapper.writeValueAsString(user);
-        mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+        UserEntity userEntity = UserEntity.builder()
+                .userName("dragon")
+                .age(24)
+                .gender("male")
+                .email("ylw@tw.com")
+                .phone("18812345678")
+                .build();
+        userRepository.save(userEntity);
         mockMvc.perform(get("/rs/users/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userName",is("dragon")));
@@ -74,7 +111,6 @@ public class UserEntityTests {
                 .age(24)
                 .phone("18812345678")
                 .email("ylw@tw.com")
-                .voteNumb(10)
                 .build();
         userRepository.save(user);
         mockMvc.perform(delete("/rs/users/1"))

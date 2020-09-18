@@ -62,7 +62,7 @@ public class VoteEntityTests {
         Vote vote = new Vote(5,1, "currenttime");
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonVote = objectMapper.writeValueAsString(vote);
-        mockMvc.perform(post("/rs/vote/2").content(jsonVote).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/rs/vote/1").content(jsonVote).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
     }
 
@@ -86,11 +86,11 @@ public class VoteEntityTests {
         Vote firstVote = new Vote(5,1, "currenttime");
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonFirstVote = objectMapper.writeValueAsString(firstVote);
-        mockMvc.perform(post("/rs/vote/2").content(jsonFirstVote).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/rs/vote/1").content(jsonFirstVote).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
         Vote secondVote = new Vote(6,1, "currenttime");
         String jsonSecondVote = objectMapper.writeValueAsString(secondVote);
-        mockMvc.perform(post("/rs/vote/2").content(jsonSecondVote).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/rs/vote/1").content(jsonSecondVote).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 }

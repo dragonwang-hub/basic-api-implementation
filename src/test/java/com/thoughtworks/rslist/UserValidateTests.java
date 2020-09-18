@@ -2,6 +2,8 @@ package com.thoughtworks.rslist;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.dto.User;
+import com.thoughtworks.rslist.entity.UserEntity;
+import com.thoughtworks.rslist.userrepository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,8 +12,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasKey;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -25,20 +31,21 @@ public class UserValidateTests {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Test
     void should_return_register_success_when_register_user_info_is_valid() throws Exception {
         User user = new User("dragon", 24, "male", "ylw@tw.com", "18812345678");
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
-
-        mockMvc.perform(get("/rs/users"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
         mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
-        mockMvc.perform(get("/rs/users"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)));
+
+        List<UserEntity> userEntities = userRepository.findAll();
+        assertEquals(1, userEntities.size());
+        assertEquals("dragon", userEntities.get(0).getUserName());
+        assertEquals(24, userEntities.get(0).getAge());
     }
 
     @Test
@@ -111,21 +118,5 @@ public class UserValidateTests {
         String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void should_get_all_user_info_by_jsonproperty() throws Exception {
-        mockMvc.perform(get("/rs/users"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].user_name", is("hello")))
-                .andExpect(jsonPath("$[0].user_age", is(19)))
-                .andExpect(jsonPath("$[0].user_gender", not(hasKey("male"))))
-                .andExpect(jsonPath("$[0].user_email", not(hasKey("1@2.3"))))
-                .andExpect(jsonPath("$[0].user_phone", not(hasKey("10123456789"))))
-                .andExpect(jsonPath("$[1].user_name", is("kityy")))
-                .andExpect(jsonPath("$[1].user_age", is(19)))
-                .andExpect(jsonPath("$[1].user_gender", not(hasKey("female"))))
-                .andExpect(jsonPath("$[1].user_email", not(hasKey("1@2.3"))))
-                .andExpect(jsonPath("$[1].user_phone", not(hasKey("10123456789"))));
     }
 }

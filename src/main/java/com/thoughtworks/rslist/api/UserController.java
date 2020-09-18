@@ -3,6 +3,7 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
+import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.CommentError;
 import com.thoughtworks.rslist.exception.InvalidUserException;
@@ -17,6 +18,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -24,17 +26,19 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    public static List<User> userList = initUserList();
-
-    private static List<User> initUserList() {
-        List<User> tempList = new ArrayList<>();
-        tempList.add(new User("hello", 19, "male", "1@2.3", "10123456789"));
-        tempList.add(new User("kityy", 19, "female", "1@2.3", "10123456789"));
-        return tempList;
-    }
 
     @GetMapping("/rs/users")
     public ResponseEntity<List<User>> getAllUser() {
+        List<UserEntity> userEntityList = userRepository.findAll();
+        List<User> userList = userEntityList.stream().map(userEntity -> User.builder()
+                .userName(userEntity.getUserName())
+                .age(userEntity.getAge())
+                .gender(userEntity.getGender())
+                .email(userEntity.getEmail())
+                .phone(userEntity.getPhone())
+                .voteNumb(userEntity.getVoteNumb())
+                .build())
+                .collect(Collectors.toList());
         return ResponseEntity.ok(userList);
     }
 
@@ -51,7 +55,6 @@ public class UserController {
                 .phone(newUser.getPhone())
                 .build();
         userRepository.save(userEntity);
-        userList.add(newUser);
         return ResponseEntity.created(null).build();
     }
 
@@ -66,12 +69,6 @@ public class UserController {
 
         userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler({InvalidUserException.class})
-    public ResponseEntity handleIndexOutOfBoundsException(Exception ex) {
-        CommentError commentError = new CommentError(ex.getMessage());
-        return ResponseEntity.badRequest().body(commentError);
     }
 }
 

@@ -32,7 +32,8 @@ public class UserEntity {
 
     private String phone;
 
-    private int voteNumb;
+    @Builder.Default
+    private int voteNumb = 10;
 
     @OneToMany(mappedBy = "user", cascade=CascadeType.REMOVE)// 此处mappedby属性等于RsEntity表的user属性
     private List<RsEventEntity> rsEventEntities;

@@ -1,10 +1,7 @@
 package com.thoughtworks.rslist.api;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.dto.RsEvent;
-import com.thoughtworks.rslist.dto.User;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.*;
@@ -13,20 +10,12 @@ import com.thoughtworks.rslist.userrepository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.jws.soap.SOAPBinding;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-
-import static com.thoughtworks.rslist.api.UserController.userList;
 
 
 @RestController
@@ -140,11 +129,5 @@ public class RsController {
         }
         rsEventRepository.deleteById(index);
         return ResponseEntity.ok().build();
-    }
-
-    @ExceptionHandler({MyIndexOutOfBoundsException.class, IndexException.class, InvaildRsEventExcepttion.class})
-    public ResponseEntity handleIndexOutOfBoundsException(Exception ex) {
-        CommentError commentError = new CommentError(ex.getMessage());
-        return ResponseEntity.badRequest().body(commentError);
     }
 }

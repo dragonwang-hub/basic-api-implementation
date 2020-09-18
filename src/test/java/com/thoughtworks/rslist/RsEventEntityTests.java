@@ -215,6 +215,4 @@ public class RsEventEntityTests {
         assertEquals("民生", allRsEvent.get(0).getKeyword());
         assertEquals(user.getUserName(), allRsEvent.get(0).getUser().getUserName());
     }
-
-
 }

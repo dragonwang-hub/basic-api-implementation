@@ -2,12 +2,14 @@ package com.thoughtworks.rslist.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -34,7 +36,7 @@ public class User {
     @JsonProperty("user_phone")
     private String phone;
 
-    @JsonIgnore
+    //@JsonIgnore
     private int voteNumb;
 
     public User(String userName, int age, String gender, String email, String phone) {
