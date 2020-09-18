@@ -17,18 +17,20 @@ import java.util.List;
 public class RsEventEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
 
     private String eventName;
 
     private String keyword;
 
+    private int rsVotes;
+
     @ManyToOne()
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany(mappedBy = "rsevent", cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy = "rsevent")
     private List<VoteEntity> voteEntities;
 
 }

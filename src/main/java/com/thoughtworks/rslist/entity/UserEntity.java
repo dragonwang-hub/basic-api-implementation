@@ -17,10 +17,11 @@ import java.util.List;
 @NoArgsConstructor
 public class UserEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "user")
+
     private String userName;
 
     private int age;
@@ -36,6 +37,6 @@ public class UserEntity {
     @OneToMany(mappedBy = "user", cascade=CascadeType.REMOVE)// 此处mappedby属性等于RsEntity表的user属性
     private List<RsEventEntity> rsEventEntities;
 
-    @OneToMany(mappedBy = "user", cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user")
     private List<VoteEntity> voteEntities;
 }

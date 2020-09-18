@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 @RestController
@@ -27,9 +28,9 @@ public class VoteController {
     @Autowired
     VoteRepository voteRepository;
 
+    @Transactional
     @PostMapping("/rs/vote/{rsEventId}")
     public ResponseEntity addVotes(@PathVariable int rsEventId, @RequestBody Vote vote) {
-
         UserEntity userEntity = userRepository.findById(vote.getUserId()).get();
         RsEventEntity rsEventEntity = rsEventRepository.findById(rsEventId).get();
         int restVotes = userEntity.getVoteNumb() - vote.getVoteNumb();
