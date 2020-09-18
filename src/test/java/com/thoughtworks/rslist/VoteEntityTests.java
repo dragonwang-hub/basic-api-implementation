@@ -101,37 +101,37 @@ public class VoteEntityTests {
                 .rsEvent(rsEventEntity_1)
                 .user(userEntity_1)
                 .voteNumb(2)
-                .curTime(localDateTime)
+                .voteTime(localDateTime)
                 .build();
         VoteEntity vote_2 = VoteEntity.builder()
                 .rsEvent(rsEventEntity_1)
                 .user(userEntity_2)
                 .voteNumb(2)
-                .curTime(localDateTime)
+                .voteTime(localDateTime)
                 .build();
         VoteEntity vote_3 = VoteEntity.builder()
                 .rsEvent(rsEventEntity_1)
                 .user(userEntity_3)
                 .voteNumb(2)
-                .curTime(localDateTime)
+                .voteTime(localDateTime)
                 .build();
         VoteEntity vote_4 = VoteEntity.builder()
                 .rsEvent(rsEventEntity_2)
                 .user(userEntity_1)
                 .voteNumb(2)
-                .curTime(localDateTime)
+                .voteTime(localDateTime)
                 .build();
         VoteEntity vote_5 = VoteEntity.builder()
                 .rsEvent(rsEventEntity_2)
                 .user(userEntity_2)
                 .voteNumb(2)
-                .curTime(localDateTime)
+                .voteTime(localDateTime)
                 .build();
         VoteEntity vote_6 = VoteEntity.builder()
                 .rsEvent(rsEventEntity_2)
                 .user(userEntity_3)
                 .voteNumb(2)
-                .curTime(localDateTime)
+                .voteTime(localDateTime)
                 .build();
         List<VoteEntity> voteEntityList = new ArrayList<>();
         voteEntityList.add(vote_1);
@@ -203,6 +203,38 @@ public class VoteEntityTests {
         mockMvc.perform(get("/rs/votes/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void should_get_votes_in_time_range_when_get_specify_time_range_votes() throws Exception {
+        LocalDateTime testTimeOfFirst = LocalDateTime.of(2020, 8, 1, 12, 12, 12);
+        VoteEntity vote_7 = VoteEntity.builder()
+                .rsEvent(rsEventEntity_1)
+                .user(userEntity_1)
+                .voteNumb(2)
+                .voteTime(testTimeOfFirst)
+                .build();
+        voteRepository.save(vote_7);
+        LocalDateTime testTimeOfSecond = LocalDateTime.of(2020, 9, 18, 12, 12, 12);
+        VoteEntity vote_8 = VoteEntity.builder()
+                .rsEvent(rsEventEntity_1)
+                .user(userEntity_1)
+                .voteNumb(2)
+                .voteTime(testTimeOfSecond)
+                .build();
+        voteRepository.save(vote_8);
+        LocalDateTime startTimeOfTest = LocalDateTime.of(2020, 8, 1, 0, 0, 0);
+        LocalDateTime endTimeOfTest = LocalDateTime.of(2020, 9, 19, 0, 0, 0);
+        String timeStringOfStart = String.valueOf(testTimeOfFirst);
+        String timeStringOfEnd = String.valueOf(testTimeOfSecond);
+        mockMvc.perform(get("/rs/votes/time")
+                .param("startTime", String.valueOf(startTimeOfTest))
+                .param("endTime", String.valueOf(endTimeOfTest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].rsEventId", is(rsEventEntity_1.getId())))
+                .andExpect(jsonPath("$[0].voteTime", is(timeStringOfStart)))
+                .andExpect(jsonPath("$[1].voteTime", is(timeStringOfEnd)));
     }
 
 }

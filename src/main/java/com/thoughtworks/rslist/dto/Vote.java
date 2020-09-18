@@ -26,11 +26,11 @@ public class Vote {
 
     @JsonSerialize(using = ToStringSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime curTime;
+    private LocalDateTime voteTime;
 
     public Vote(int voteNumb, int userId, LocalDateTime curTime) {
         this.voteNumb = voteNumb;
         this.userId = userId;
-        this.curTime = curTime;
+        this.voteTime = curTime;
     }
 }

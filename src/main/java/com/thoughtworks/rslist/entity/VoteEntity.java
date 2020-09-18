@@ -25,9 +25,7 @@ public class VoteEntity {
 
     private int voteNumb;
 
-    @JsonSerialize(using = ToStringSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime curTime;
+    private LocalDateTime voteTime;
 
     @ManyToOne()
     @JoinColumn(name = "user_Id")

@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,7 @@ public class VoteController {
             VoteEntity voteEntity = VoteEntity.builder()
                     .voteNumb(vote.getVoteNumb())
                     .user(userEntity)
-                    .curTime(vote.getCurTime())
+                    .voteTime(vote.getVoteTime())
                     .rsEvent(rsEventEntity)
                     .build();
             userEntity.setVoteNumb(restVotes);
@@ -54,33 +55,51 @@ public class VoteController {
             @RequestParam(defaultValue = "1") int pageIndex) {
         int everyPageSize = 5;
         int peopleComputorGapAboutPageIndex = 1;
-        Pageable pageable = PageRequest.of(pageIndex-peopleComputorGapAboutPageIndex, everyPageSize);
+        Pageable pageable = PageRequest.of(pageIndex - peopleComputorGapAboutPageIndex, everyPageSize);
         List<VoteEntity> voteEntities = voteRepository.findAllByUserIdAndRsEventId(userId, rsEventId, pageable);
-        List<Vote> votes = voteEntities.stream().map(voteEntity->Vote.builder()
+        List<Vote> votes = voteEntities.stream().map(voteEntity -> Vote.builder()
                 .userId(voteEntity.getUser().getId())
                 .rsEventId(voteEntity.getRsEvent().getId())
                 .voteNumb(voteEntity.getVoteNumb())
-                .curTime(voteEntity.getCurTime())
+                .voteTime(voteEntity.getVoteTime())
                 .build()
         ).collect(Collectors.toList());
         return ResponseEntity.ok(votes);
     }
 
     @GetMapping("/rs/votes/{pageIndex}")
-    public ResponseEntity<List<Vote>> getAllVotesOfSpecifyPage(@PathVariable int pageIndex){
+    public ResponseEntity<List<Vote>> getAllVotesOfSpecifyPage(@PathVariable int pageIndex) {
         int everyPageSize = 5;
         int peopleComputorGapAboutPageIndex = 1;
-        Pageable pageable = PageRequest.of(pageIndex-peopleComputorGapAboutPageIndex, everyPageSize);
+        Pageable pageable = PageRequest.of(pageIndex - peopleComputorGapAboutPageIndex, everyPageSize);
         List<VoteEntity> voteEntities = voteRepository.findAll(pageable);
-        List<Vote> votes = voteEntities.stream().map(voteEntity->Vote.builder()
+        List<Vote> votes = voteEntities.stream().map(voteEntity -> Vote.builder()
                 .userId(voteEntity.getUser().getId())
                 .rsEventId(voteEntity.getRsEvent().getId())
                 .voteNumb(voteEntity.getVoteNumb())
-                .curTime(voteEntity.getCurTime())
+                .voteTime(voteEntity.getVoteTime())
+                .build()
+        ).collect(Collectors.toList());
+        return ResponseEntity.ok(votes);
+    }
+
+    @GetMapping("/rs/votes/time")
+    public ResponseEntity<List<Vote>> getVotesByLocalDateTimeBetween(
+            @RequestParam String startTime,
+            @RequestParam String endTime) {
+        LocalDateTime start = LocalDateTime.parse(startTime);
+        LocalDateTime end = LocalDateTime.parse(endTime);
+        List<VoteEntity> voteEntities = voteRepository.findByVoteTimeBetween(start, end);
+        List<Vote> votes = voteEntities.stream().map(voteEntity -> Vote.builder()
+                .userId(voteEntity.getUser().getId())
+                .rsEventId(voteEntity.getRsEvent().getId())
+                .voteNumb(voteEntity.getVoteNumb())
+                .voteTime(voteEntity.getVoteTime())
                 .build()
         ).collect(Collectors.toList());
         return ResponseEntity.ok(votes);
     }
 }
+
 
 
