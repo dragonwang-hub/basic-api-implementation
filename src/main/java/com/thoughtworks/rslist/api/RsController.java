@@ -22,9 +22,6 @@ import java.util.stream.Collectors;
 public class RsController {
 
     @Autowired
-    UserController userController;
-
-    @Autowired
     UserRepository userRepository;
 
     @Autowired
