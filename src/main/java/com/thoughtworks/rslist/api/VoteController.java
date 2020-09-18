@@ -1,6 +1,5 @@
 package com.thoughtworks.rslist.api;
 
-import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.Vote;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
@@ -9,14 +8,14 @@ import com.thoughtworks.rslist.userrepository.RsEventRepository;
 import com.thoughtworks.rslist.userrepository.UserRepository;
 import com.thoughtworks.rslist.userrepository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class VoteController {
@@ -39,13 +38,48 @@ public class VoteController {
                     .voteNumb(vote.getVoteNumb())
                     .user(userEntity)
                     .curTime(vote.getCurTime())
-                    .rsevent(rsEventEntity)
+                    .rsEvent(rsEventEntity)
                     .build();
             userEntity.setVoteNumb(restVotes);
             voteRepository.save(voteEntity);
             return ResponseEntity.created(null).build();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/rs/vote")
+    public ResponseEntity<List<Vote>> getVotesByUserIdAndRsEventId(
+            @RequestParam int userId,
+            @RequestParam int rsEventId,
+            @RequestParam(defaultValue = "1") int pageIndex) {
+        int everyPageSize = 5;
+        int peopleComputorGapAboutPageIndex = 1;
+        Pageable pageable = PageRequest.of(pageIndex-peopleComputorGapAboutPageIndex, everyPageSize);
+        List<VoteEntity> voteEntities = voteRepository.findAllByUserIdAndRsEventId(userId, rsEventId, pageable);
+        List<Vote> votes = voteEntities.stream().map(voteEntity->Vote.builder()
+                .userId(voteEntity.getUser().getId())
+                .rsEventId(voteEntity.getRsEvent().getId())
+                .voteNumb(voteEntity.getVoteNumb())
+                .curTime(voteEntity.getCurTime())
+                .build()
+        ).collect(Collectors.toList());
+        return ResponseEntity.ok(votes);
+    }
+
+    @GetMapping("/rs/votes/{pageIndex}")
+    public ResponseEntity<List<Vote>> getAllVotesOfSpecifyPage(@PathVariable int pageIndex){
+        int everyPageSize = 5;
+        int peopleComputorGapAboutPageIndex = 1;
+        Pageable pageable = PageRequest.of(pageIndex-peopleComputorGapAboutPageIndex, everyPageSize);
+        List<VoteEntity> voteEntities = voteRepository.findAll(pageable);
+        List<Vote> votes = voteEntities.stream().map(voteEntity->Vote.builder()
+                .userId(voteEntity.getUser().getId())
+                .rsEventId(voteEntity.getRsEvent().getId())
+                .voteNumb(voteEntity.getVoteNumb())
+                .curTime(voteEntity.getCurTime())
+                .build()
+        ).collect(Collectors.toList());
+        return ResponseEntity.ok(votes);
     }
 }
 

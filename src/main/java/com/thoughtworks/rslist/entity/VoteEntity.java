@@ -1,5 +1,9 @@
 package com.thoughtworks.rslist.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,13 +25,15 @@ public class VoteEntity {
 
     private int voteNumb;
 
-    private String curTime;
+    @JsonSerialize(using = ToStringSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime curTime;
 
     @ManyToOne()
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_Id")
     private UserEntity user;
 
     @ManyToOne()
-    @JoinColumn(name = "rsevent_id")
-    private RsEventEntity rsevent;
+    @JoinColumn(name = "rsEvent_Id")
+    private RsEventEntity rsEvent;
 }

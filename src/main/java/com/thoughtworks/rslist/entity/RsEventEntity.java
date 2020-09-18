@@ -30,7 +30,7 @@ public class RsEventEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany(mappedBy = "rsevent")
+    @OneToMany(mappedBy = "rsEvent")
     private List<VoteEntity> voteEntities;
 
 }
