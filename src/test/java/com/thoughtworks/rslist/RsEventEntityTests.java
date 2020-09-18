@@ -107,7 +107,7 @@ public class RsEventEntityTests {
         RsEvent rsEvent = new RsEvent("猪肉什么时候能降价？", "民生", user.getId());
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writerWithView(RsEvent.Public.class).writeValueAsString(rsEvent);
-        mockMvc.perform(patch("/rs/2").content(json)
+        mockMvc.perform(patch("/rs/1").content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         List<RsEventEntity> allRsEvent = rsEventRepository.findAll();
@@ -146,7 +146,7 @@ public class RsEventEntityTests {
         RsEvent rsEvent = new RsEvent("猪肉什么时候能降价？", "民生", newuser.getId());
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writerWithView(RsEvent.Public.class).writeValueAsString(rsEvent);
-        mockMvc.perform(patch("/rs/2").content(json)
+        mockMvc.perform(patch("/rs/1").content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
         List<RsEventEntity> allRsEvent = rsEventRepository.findAll();
@@ -176,7 +176,7 @@ public class RsEventEntityTests {
         RsEvent rsEvent = new RsEvent("猪肉什么时候能降价？", "", user.getId());
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writerWithView(RsEvent.Public.class).writeValueAsString(rsEvent);
-        mockMvc.perform(patch("/rs/2").content(json)
+        mockMvc.perform(patch("/rs/1").content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         List<RsEventEntity> allRsEvent = rsEventRepository.findAll();
@@ -206,7 +206,7 @@ public class RsEventEntityTests {
         RsEvent rsEvent = new RsEvent("", "民生", user.getId());
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writerWithView(RsEvent.Public.class).writeValueAsString(rsEvent);
-        mockMvc.perform(patch("/rs/2").content(json)
+        mockMvc.perform(patch("/rs/1").content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         List<RsEventEntity> allRsEvent = rsEventRepository.findAll();
