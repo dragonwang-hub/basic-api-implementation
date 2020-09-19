@@ -57,7 +57,7 @@ class RsListApplicationTests {
                 .rsVotes(10)
                 .build();
         rsEventRepository.save(rsEventEntity_2);
-        mockMvc.perform(get("/rs/list"))
+        mockMvc.perform(get("/rs/events"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
@@ -88,7 +88,7 @@ class RsListApplicationTests {
                 .rsVotes(10)
                 .build();
         rsEventRepository.save(rsEventEntity);
-        mockMvc.perform(get("/rs/1"))
+        mockMvc.perform(get("/rs/events/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.eventName", is("第一条事件")))
                 .andExpect(jsonPath("$.keyword", is("无分类")))
@@ -122,7 +122,7 @@ class RsListApplicationTests {
                 .rsVotes(10)
                 .build();
         rsEventRepository.save(rsEventEntity_2);
-        mockMvc.perform(get("/rs/list?start=1&end=2"))
+        mockMvc.perform(get("/rs/events?start=1&end=2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
                 .andExpect(jsonPath("$[0].keyword", is("无分类")))
@@ -160,12 +160,12 @@ class RsListApplicationTests {
                 .rsVotes(10)
                 .build();
         rsEventRepository.save(rsEventEntity_2);
-        mockMvc.perform(get("/rs/list"))
+        mockMvc.perform(get("/rs/events"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
-        mockMvc.perform(delete("/rs/1"))
+        mockMvc.perform(delete("/rs/events/1"))
                 .andExpect(status().isOk());
-        mockMvc.perform(get("/rs/list"))
+        mockMvc.perform(get("/rs/events"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
@@ -188,7 +188,7 @@ class RsListApplicationTests {
                 .rsVotes(10)
                 .build();
         rsEventRepository.save(rsEventEntity);
-        mockMvc.perform(get("/rs/list"))
+        mockMvc.perform(get("/rs/events"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
@@ -201,14 +201,14 @@ class RsListApplicationTests {
 
     @Test
     void should_return_invalid_request_param_when_start_and_end_not_in_range() throws Exception {
-        mockMvc.perform(get("/rs/list?start=1&end=30"))
+        mockMvc.perform(get("/rs/events?start=1&end=30"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", is("invalid request param")));
     }
 
     @Test
     void should_return_invalid_index_when_index_not_in_range() throws Exception {
-        mockMvc.perform(get("/rs/30"))
+        mockMvc.perform(get("/rs/events/30"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", is("invalid index")));
     }
@@ -229,7 +229,7 @@ class RsListApplicationTests {
         User user = new User("dragon", 101, "male", "ylw@tw.com", "18812345678");
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(user);
-        mockMvc.perform(post("/rs/register").content(json).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/rs/users/register").content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", is("invalid user")));
     }

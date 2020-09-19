@@ -80,7 +80,7 @@ public class UserEntityTests {
         User user = new User("dragon", 24, "male", "ylw@tw.com", "18812345678");
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
-        mockMvc.perform(post("/rs/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/rs/users/register").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
         // 用于测试是否成功在数据库内add数据
         List<UserEntity> allUser = userRepository.findAll();

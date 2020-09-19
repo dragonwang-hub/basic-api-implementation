@@ -29,10 +29,10 @@ public class VoteController {
     VoteRepository voteRepository;
 
     @Transactional
-    @PostMapping("/rs/vote/{rsEventId}")
-    public ResponseEntity addVotes(@PathVariable int rsEventId, @RequestBody Vote vote) {
+    @PostMapping("/rs/votes/{id}")
+    public ResponseEntity addVotes(@PathVariable int id, @RequestBody Vote vote) {
         UserEntity userEntity = userRepository.findById(vote.getUserId()).get();
-        RsEventEntity rsEventEntity = rsEventRepository.findById(rsEventId).get();
+        RsEventEntity rsEventEntity = rsEventRepository.findById(id).get();
         int restVotes = userEntity.getVoteNumb() - vote.getVoteNumb();
         if (restVotes >= 0) {
             VoteEntity voteEntity = VoteEntity.builder()
@@ -48,7 +48,7 @@ public class VoteController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/rs/vote")
+    @GetMapping("/rs/votes/user&rsevent")
     public ResponseEntity<List<Vote>> getVotesByUserIdAndRsEventId(
             @RequestParam int userId,
             @RequestParam int rsEventId,
@@ -67,10 +67,11 @@ public class VoteController {
         return ResponseEntity.ok(votes);
     }
 
-    @GetMapping("/rs/votes/{pageIndex}")
-    public ResponseEntity<List<Vote>> getAllVotesOfSpecifyPage(@PathVariable int pageIndex) {
+    @GetMapping("/rs/votes/{id}")
+    public ResponseEntity<List<Vote>> getAllVotesOfSpecifyPage(@PathVariable int id) {
         int everyPageSize = 5;
         int peopleComputorGapAboutPageIndex = 1;
+        int pageIndex = id;
         Pageable pageable = PageRequest.of(pageIndex - peopleComputorGapAboutPageIndex, everyPageSize);
         List<VoteEntity> voteEntities = voteRepository.findAll(pageable);
         List<Vote> votes = voteEntities.stream().map(voteEntity -> Vote.builder()
@@ -83,7 +84,7 @@ public class VoteController {
         return ResponseEntity.ok(votes);
     }
 
-    @GetMapping("/rs/votes/time")
+    @GetMapping("/rs/votes/timerange")
     public ResponseEntity<List<Vote>> getVotesByLocalDateTimeBetween(
             @RequestParam String startTime,
             @RequestParam String endTime) {

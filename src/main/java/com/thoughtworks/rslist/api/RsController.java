@@ -29,7 +29,7 @@ public class RsController {
 
 
     @JsonView(RsEvent.Public.class)
-    @GetMapping("/rs/list")
+    @GetMapping("/rs/events")
     public ResponseEntity<List<RsEvent>> getAllRsEvent(@RequestParam(required = false) Integer start,
                                                        @RequestParam(required = false) Integer end) throws MyIndexOutOfBoundsException {
         List<RsEventEntity> rsEntityList = rsEventRepository.findAll();
@@ -51,12 +51,12 @@ public class RsController {
     }
 
     @JsonView(RsEvent.Public.class)
-    @GetMapping("/rs/{rsEventId}")
-    public ResponseEntity<RsEvent> getRsEvent(@PathVariable int rsEventId) throws IndexException {
-        if (rsEventId < 0 || rsEventId > rsEventRepository.count()) {
+    @GetMapping("/rs/events/{id}")
+    public ResponseEntity<RsEvent> getRsEvent(@PathVariable int id) throws IndexException {
+        if (id < 0 || id > rsEventRepository.count()) {
             throw new IndexException("invalid index");
         }
-        RsEventEntity rsEntity = rsEventRepository.findById(rsEventId).get();
+        RsEventEntity rsEntity = rsEventRepository.findById(id).get();
         RsEvent rsEvent = RsEvent.builder()
                 .eventName(rsEntity.getEventName())
                 .keyword(rsEntity.getKeyword())
@@ -86,10 +86,10 @@ public class RsController {
     }
 
     @Transactional
-    @PatchMapping("/rs/{index}")
-    public ResponseEntity<RsEvent> alterRsEvent(@PathVariable int index, @RequestBody RsEvent rsEvent) {
+    @PatchMapping("/rs/events/{id}")
+    public ResponseEntity<RsEvent> alterRsEvent(@PathVariable int id, @RequestBody RsEvent rsEvent) {
         UserEntity user = userRepository.findById(rsEvent.getUserId()).get();
-        RsEventEntity rsEventEntity = rsEventRepository.findById(index).get();
+        RsEventEntity rsEventEntity = rsEventRepository.findById(id).get();
         if (!rsEventEntity.getUser().equals(user)) {
             return ResponseEntity.badRequest().build();
         }
@@ -119,12 +119,12 @@ public class RsController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/rs/{index}")
-    public ResponseEntity deleteRsEvent(@PathVariable int index) {
-        if(!rsEventRepository.findById(index).isPresent()){
+    @DeleteMapping("/rs/events/{id}")
+    public ResponseEntity deleteRsEvent(@PathVariable int id) {
+        if(!rsEventRepository.findById(id).isPresent()){
             return ResponseEntity.badRequest().build();
         }
-        rsEventRepository.deleteById(index);
+        rsEventRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 }

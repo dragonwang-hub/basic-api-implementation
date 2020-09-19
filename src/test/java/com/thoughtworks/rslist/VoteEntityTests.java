@@ -148,7 +148,7 @@ public class VoteEntityTests {
         Vote vote = new Vote(5, 1, localDateTime);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonVote = objectMapper.writeValueAsString(vote);
-        mockMvc.perform(post("/rs/vote/1").content(jsonVote).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/rs/votes/1").content(jsonVote).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
     }
 
@@ -172,17 +172,17 @@ public class VoteEntityTests {
         Vote firstVote = new Vote(5, 1, localDateTime);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonFirstVote = objectMapper.writeValueAsString(firstVote);
-        mockMvc.perform(post("/rs/vote/1").content(jsonFirstVote).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/rs/votes/1").content(jsonFirstVote).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
         Vote secondVote = new Vote(6, 1, localDateTime);
         String jsonSecondVote = objectMapper.writeValueAsString(secondVote);
-        mockMvc.perform(post("/rs/vote/1").content(jsonSecondVote).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/rs/votes/1").content(jsonSecondVote).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void should_get_votes_by_userId_and_rsEventId() throws Exception {
-        mockMvc.perform(get("/rs/vote")
+        mockMvc.perform(get("/rs/votes/user&rsevent")
                 .param("userId", String.valueOf(userEntity_1.getId()))
                 .param("rsEventId", String.valueOf(rsEventEntity_1.getId())))
                 .andExpect(status().isOk())
@@ -227,7 +227,7 @@ public class VoteEntityTests {
         LocalDateTime endTimeOfTest = LocalDateTime.of(2020, 9, 19, 0, 0, 0);
         String timeStringOfStart = String.valueOf(testTimeOfFirst);
         String timeStringOfEnd = String.valueOf(testTimeOfSecond);
-        mockMvc.perform(get("/rs/votes/time")
+        mockMvc.perform(get("/rs/votes/timerange")
                 .param("startTime", String.valueOf(startTimeOfTest))
                 .param("endTime", String.valueOf(endTimeOfTest)))
                 .andExpect(status().isOk())

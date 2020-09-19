@@ -1,9 +1,5 @@
 package com.thoughtworks.rslist.entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

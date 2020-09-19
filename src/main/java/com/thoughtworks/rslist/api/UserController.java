@@ -42,7 +42,7 @@ public class UserController {
         return ResponseEntity.ok(userList);
     }
 
-    @PostMapping("/rs/register")
+    @PostMapping("/rs/users/register")
     public ResponseEntity registerUser(@Valid @RequestBody User newUser, BindingResult re) throws InvalidUserException {
         if (re.getAllErrors().size()!= 0) {
             throw new InvalidUserException("invalid user");
