@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.dto.User;
 import com.thoughtworks.rslist.exception.CommentError;
 import com.thoughtworks.rslist.exception.IndexException;
+import com.thoughtworks.rslist.exception.InvalidUserException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,16 +34,12 @@ public class UserController {
     }
 
     @PostMapping("/rs/register")
-    public ResponseEntity registerUser(@Valid @RequestBody User newUser) throws JsonProcessingException {
+    public ResponseEntity registerUser(@Valid @RequestBody User newUser, BindingResult re) throws InvalidUserException {
+        if (re.getAllErrors().size()!= 0) {
+            throw new InvalidUserException("invalid user");
+        }
         userList.add(newUser);
         return ResponseEntity.created(null).build();
-    }
-
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity handleIndexOutOfBoundsException(Exception ex) throws JsonProcessingException {
-        CommentError commentError = new CommentError();
-        commentError.setError("invalid user");
-        return ResponseEntity.badRequest().body(commentError);
     }
 }
 
