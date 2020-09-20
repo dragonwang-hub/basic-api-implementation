@@ -80,13 +80,6 @@ public class RsController {
             return ResponseEntity.badRequest().build();
         }
         rsService.addRsEvent(rsEvent);
-//        UserEntity user = userRepository.findById(rsEvent.getUserId()).get();
-//        RsEventEntity responseEntity = RsEventEntity.builder()
-//                .eventName(rsEvent.getEventName())
-//                .keyword(rsEvent.getKeyword())
-//                .user(user)
-//                .build();
-//        rsEventRepository.save(responseEntity);
         return ResponseEntity.created(null).build();
     }
 
