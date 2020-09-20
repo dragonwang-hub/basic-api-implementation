@@ -6,17 +6,16 @@ import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.userrepository.RsEventRepository;
 import com.thoughtworks.rslist.userrepository.UserRepository;
 import com.thoughtworks.rslist.userrepository.VoteRepository;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class RsService {
-    RsEventRepository rsEventRepository;
-    UserRepository userRepository;
-    VoteRepository voteRepository;
+    final RsEventRepository rsEventRepository;
+    final UserRepository userRepository;
 
     public RsService(RsEventRepository rsEventRepository, UserRepository userRepository, VoteRepository voteRepository) {
         this.rsEventRepository = rsEventRepository;
         this.userRepository = userRepository;
-        this.voteRepository = voteRepository;
     }
 
     public void addRsEvent(RsEvent rsEvent){

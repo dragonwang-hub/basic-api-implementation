@@ -10,15 +10,15 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class configure {
-    @Autowired
-    RsEventRepository rsEventRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    VoteRepository voteRepository;
-
-    @Bean
-    public RsService createRsService() {
-        return new RsService(rsEventRepository, userRepository, voteRepository);
-    }
+//    @Autowired
+//    RsEventRepository rsEventRepository;
+//    @Autowired
+//    UserRepository userRepository;
+//    @Autowired
+//    VoteRepository voteRepository;
+//
+//    @Bean
+//    public RsService createRsService() {
+//        return new RsService(rsEventRepository, userRepository, voteRepository);
+//    }
 }

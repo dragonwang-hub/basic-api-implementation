@@ -21,12 +21,14 @@ import java.util.stream.Collectors;
 @RestController
 public class VoteController {
 
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RsEventRepository rsEventRepository;
-    @Autowired
-    VoteRepository voteRepository;
+    final UserRepository userRepository;
+    final RsEventRepository rsEventRepository;
+    final VoteRepository voteRepository;
+    public VoteController(UserRepository userRepository, RsEventRepository rsEventRepository, VoteRepository voteRepository) {
+        this.userRepository = userRepository;
+        this.rsEventRepository = rsEventRepository;
+        this.voteRepository = voteRepository;
+    }
 
     @Transactional
     @PostMapping("/rs/votes/{id}")

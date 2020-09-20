@@ -7,6 +7,7 @@ import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.CommentError;
 import com.thoughtworks.rslist.exception.InvalidUserException;
+import com.thoughtworks.rslist.service.UserService;
 import com.thoughtworks.rslist.userrepository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.xml.ws.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +25,13 @@ import java.util.stream.Collectors;
 @RestController
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+    final UserRepository userRepository;
+    final UserService userService;
 
+    public UserController(UserRepository userRepository, UserService userService) {
+        this.userRepository = userRepository;
+        this.userService = userService;
+    }
 
     @GetMapping("/rs/users")
     public ResponseEntity<List<User>> getAllUser() {
@@ -47,14 +53,7 @@ public class UserController {
         if (re.getAllErrors().size()!= 0) {
             throw new InvalidUserException("invalid user");
         }
-        UserEntity userEntity = UserEntity.builder()
-                .userName(newUser.getUserName())
-                .age(newUser.getAge())
-                .email(newUser.getEmail())
-                .gender(newUser.getGender())
-                .phone(newUser.getPhone())
-                .build();
-        userRepository.save(userEntity);
+        userService.registerUser(newUser);
         return ResponseEntity.created(null).build();
     }
 
