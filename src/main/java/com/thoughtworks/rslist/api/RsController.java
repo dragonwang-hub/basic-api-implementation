@@ -5,6 +5,7 @@ import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.*;
+import com.thoughtworks.rslist.service.RsService;
 import com.thoughtworks.rslist.userrepository.RsEventRepository;
 import com.thoughtworks.rslist.userrepository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,8 @@ public class RsController {
 
     @Autowired
     RsEventRepository rsEventRepository;
-
+    @Autowired
+    RsService rsService;
 
     @JsonView(RsEvent.Public.class)
     @GetMapping("/rs/events")
@@ -68,20 +70,21 @@ public class RsController {
 
     @Transactional
     @PostMapping("/rs/event")
-    public ResponseEntity addRsEvent(@Valid @RequestBody RsEvent rsEvent,BindingResult re) throws InvaildRsEventExcepttion {
-        if (re.getAllErrors().size()!= 0) {
+    public ResponseEntity addRsEvent(@Valid @RequestBody RsEvent rsEvent, BindingResult re) throws InvaildRsEventExcepttion {
+        if (re.getAllErrors().size() != 0) {
             throw new InvaildRsEventExcepttion("invalid param");
         }
         if (!userRepository.findById(rsEvent.getUserId()).isPresent()) {
             return ResponseEntity.badRequest().build();
         }
-        UserEntity user = userRepository.findById(rsEvent.getUserId()).get();
-        RsEventEntity responseEntity = RsEventEntity.builder()
-                .eventName(rsEvent.getEventName())
-                .keyword(rsEvent.getKeyword())
-                .user(user)
-                .build();
-        rsEventRepository.save(responseEntity);
+        rsService.addRsEvent(rsEvent);
+//        UserEntity user = userRepository.findById(rsEvent.getUserId()).get();
+//        RsEventEntity responseEntity = RsEventEntity.builder()
+//                .eventName(rsEvent.getEventName())
+//                .keyword(rsEvent.getKeyword())
+//                .user(user)
+//                .build();
+//        rsEventRepository.save(responseEntity);
         return ResponseEntity.created(null).build();
     }
 
@@ -94,19 +97,19 @@ public class RsController {
             return ResponseEntity.badRequest().build();
         }
         RsEventEntity responseEntity;
-        if(rsEvent.getEventName().equals("")){
+        if (rsEvent.getEventName().equals("")) {
             responseEntity = RsEventEntity.builder()
                     .eventName(rsEventEntity.getEventName())
                     .keyword(rsEvent.getKeyword())
                     .user(user)
                     .build();
-        }else if(rsEvent.getKeyword().equals("")){
+        } else if (rsEvent.getKeyword().equals("")) {
             responseEntity = RsEventEntity.builder()
                     .eventName(rsEvent.getEventName())
                     .keyword(rsEventEntity.getKeyword())
                     .user(user)
                     .build();
-        }else {
+        } else {
             responseEntity = RsEventEntity.builder()
                     .eventName(rsEvent.getEventName())
                     .keyword(rsEvent.getKeyword())
@@ -121,7 +124,7 @@ public class RsController {
 
     @DeleteMapping("/rs/events/{id}")
     public ResponseEntity deleteRsEvent(@PathVariable int id) {
-        if(!rsEventRepository.findById(id).isPresent()){
+        if (!rsEventRepository.findById(id).isPresent()) {
             return ResponseEntity.badRequest().build();
         }
         rsEventRepository.deleteById(id);
