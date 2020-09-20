@@ -59,13 +59,13 @@ public class RsController {
                 rsEvent.setUser(null);
                 rsList.add(rsEvent);
                 index = rsList.size();
-                return ResponseEntity.created(URI.create("/rs/" + index)).build();
+                return ResponseEntity.status(201).header("index",String.valueOf(index)).build();
             }
         }
         userController.registerUser(rsEvent.getUser());
         rsList.add(rsEvent);
         index = rsList.size();
-        return ResponseEntity.created(URI.create("/rs/" + index)).build();
+        return ResponseEntity.status(201).header("index",String.valueOf(index)).build();
     }
 
     @PutMapping("/rs/{index}")
